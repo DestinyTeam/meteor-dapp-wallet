@@ -38,7 +38,8 @@ Check if currenct unit is an ether unit
 **/
 Template.registerHelper('isEtherUnit', function(){
     var unit = EthTools.getUnit();
-    return (unit === 'ether' || unit === 'finney');
+    console.log("We are rocks" + unit);
+    return (unit === 'ether' || (unit === 'finney' || unit === 'exp'));
 });
 
 

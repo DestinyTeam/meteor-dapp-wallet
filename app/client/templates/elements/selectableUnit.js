@@ -21,6 +21,10 @@ selectableUnits = [{
     value: 'ether'
 },
 {
+    text: 'EXP',
+    value: 'exp'
+},
+{
     text: 'FINNEY', //(µΞ)
     value: 'finney'
 },

@@ -40,9 +40,13 @@ mrt:qrcodesvg
 sacha:spin
 frozeman:global-notifications
 agnito:simptip
-ethereum:elements
+#ethereum:elements
+3stack:bignumber          
+alexvandesande:identicon
 ethereum:web3
 ethereum:blocks
 ethereum:accounts
 ethereum:dapp-styles
 numeral:numeral
+mrt:ethereumtools
+mrt:ethereumelements
