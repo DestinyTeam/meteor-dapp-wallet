@@ -15,6 +15,24 @@ var random32Bytes = function() {
     s4() + s4() + s4() + s4();
 };
 
+
+addDestiny = function() {
+    // If on the mainnet, this will add the unicorn token by default, only once.
+    checkForOriginalWallet();
+    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedUnicorn){
+        localStorage.setItem('hasAddedUnicorn', true);
+
+        unicornToken = '0x21f8caaa0199d5bb154c1b026a26b0d57b4eec07';
+        tokenId = Helpers.makeId('token', unicornToken);
+        Tokens.upsert(tokenId, {$set: {
+            address: unicornToken,
+            name: 'Destiny',
+            symbol: 'D',
+            balances: {},
+            decimals: 8
+        }});    
+    }
+};
 /**
 Update the contract data, like dailyLimit and required signatures.
 
@@ -448,6 +466,7 @@ observeWallets = function(){
     @param {Object} newDocument
     @param {Object} oldDocument
     */
+    addDestiny();
     var checkWalletConfirmations = function(newDocument, oldDocument){
         var confirmations = EthBlocks.latest.number - newDocument.creationBlock;
 

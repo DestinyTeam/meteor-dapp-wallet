@@ -30,20 +30,21 @@ Meteor.startup(function() {
     });
 
 
-
+    checkForOriginalWallet();
     // If on the mainnet, this will add the unicorn token by default, only once.
     if (Session.get('network') == 'mainnet' && !localStorage.hasAddedUnicorn){
         localStorage.setItem('hasAddedUnicorn', true);
 
-        unicornToken = '0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7';
+        unicornToken = '0x21f8caaa0199d5bb154c1b026a26b0d57b4eec07';
         tokenId = Helpers.makeId('token', unicornToken);
         Tokens.upsert(tokenId, {$set: {
             address: unicornToken,
-            name: 'Unicorns',
-            symbol: '🦄',
+            name: 'Destiny',
+            symbol: 'D',
             balances: {},
-            decimals: 0
+            decimals: 8
         }});    
     }
 
 });
+
