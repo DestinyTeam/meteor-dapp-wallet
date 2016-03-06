@@ -17,17 +17,30 @@ var random32Bytes = function() {
 
 
 addDestiny = function() {
-    // If on the mainnet, this will add the unicorn token by default, only once.
+    // If on the mainnet, this will add the Destiny token by default, only once.
     checkForOriginalWallet();
-    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedUnicorn){
-        localStorage.setItem('hasAddedUnicorn', true);
+    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedDestiny){
+        localStorage.setItem('hasAddedDestiny', true);
 
-        unicornToken = '0x21f8caaa0199d5bb154c1b026a26b0d57b4eec07';
-        tokenId = Helpers.makeId('token', unicornToken);
+        destinyToken = '0x7041462d67ea5c3df16fad5c330388beb2ddfe71';
+        tokenId = Helpers.makeId('token', destinyToken);
         Tokens.upsert(tokenId, {$set: {
-            address: unicornToken,
+            address: destinyToken,
             name: 'Destiny',
             symbol: 'D',
+            balances: {},
+            decimals: 8
+        }});    
+    }
+    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedTDestiny){
+        localStorage.setItem('hasAddedTDestiny', true);
+
+        tDestinyToken = '0xb5e4ae1ac58caeac1b035dd39f34c72bddd83ced';
+        tokenId = Helpers.makeId('token', tDestinyToken);
+        Tokens.upsert(tokenId, {$set: {
+            address: tDestinyToken,
+            name: 'Test-Destiny',
+            symbol: 'tD',
             balances: {},
             decimals: 8
         }});    

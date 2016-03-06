@@ -13,7 +13,7 @@
 
 // Change Default constants
 
-@colorLink: #02A8F3;
+@colorLink: #b99;
 
 @heightHeader: @gridWidth * 2.5;
 
@@ -51,7 +51,8 @@
 
 .dapp-content {
     padding-bottom: @defaultPaddingVertical*2;
-
+    background-image: url('bg.jpg');
+    background-position: "center center";
     .dapp-container {
         > h2 {
             margin-bottom: @gridHeight * 1;
@@ -346,9 +347,13 @@ body {
             
         }
     }
-
+    .dapp-actionbar {
+        background-color: #173348;
+        color: #173348;
+    }
     .accounts-page-summary.sticky + .dapp-actionbar {
         flex: 100%;
+        background-color: #173348;
         nav {
             float: right;
         }
@@ -431,8 +436,14 @@ body {
     color: @colorLink;
 }
 
-.account-send-form {
+.select-token {
+                color: @colorLink;
+                background-color: #173348;
+                width: 100%;
+            }
 
+
+.account-send-form {
     p.over-daily {
         .orange;
         font-weight: 400;
@@ -457,11 +468,13 @@ body {
 
             select {
                 color: @colorLink;
+                background-color: #173348;
                 width: 100%;
             }
 
             .dapp-address-input input {
                 width: 100%;
+                background-color: #173348;
             }
             
         }
@@ -479,6 +492,8 @@ body {
             .source-code {
                 .dapp-data-textarea {
                     display: none;
+
+                background-color: #173348;
                 }
                 .ace_editor {
                     display: block;
@@ -487,6 +502,8 @@ body {
 
             select {
                 margin-bottom: @defaultMargin*2;
+
+                background-color: #173348;
             }
             h4 {
                 text-transform: lowercase;
@@ -513,6 +530,8 @@ body {
 
             input:not([type='checkbox']),
             select {
+
+                background-color: #173348;
                 width: 100%;
             }
             input[type='checkbox'] {
@@ -523,6 +542,8 @@ body {
             #contract-source-editor {
                 width: auto;
                 height: 400px;
+
+                background-color: #173348;
             }
 
             // .solidity-source {
@@ -536,6 +557,7 @@ body {
         > .amount {
             position: relative;
 
+
             span {
                 font-size: 1.3em;
                 font-weight: 400;
@@ -544,11 +566,15 @@ body {
 
             input {
                 width: 100%;
+
+                background-color: #173348;
             }
         }
 
         .token-ether {
-            color: @colorGrayDark;
+            color: @colorWhite;
+
+                
             font-size: 16px;
             font-weight: normal;
             height: @gridHeight;

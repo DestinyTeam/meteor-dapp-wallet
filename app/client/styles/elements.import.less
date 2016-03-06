@@ -14,6 +14,12 @@
 .blue {
     color: @colorBlue;
 }
+@colorDarkBlue: #173348;
+
+body {
+    color: #fff;
+    background-color: @colorDarkBlue;
+}
 
 span.address {
     display: inline;
@@ -44,6 +50,7 @@ span.address {
 
 .wallet-box {
     position: relative;
+    background-color: @colorDarkBlue;
     display: inline-block;
     width: @gridWidth * 6.5;
     min-height: @gridHeight*4;
@@ -127,7 +134,7 @@ span.address {
 
             &:hover {
                 background: @colorLink;
-                color: @colorWhite;
+                color: @colorGray;
             }
 
             i {

@@ -62,7 +62,7 @@ var getUnit = function(unit){
         unit = LocalStore.get('dapp_etherUnit');
 
         if(!unit) {
-            unit = 'ether';
+            unit = 'exp';
             LocalStore.set('dapp_etherUnit', unit);        
         }
     }
