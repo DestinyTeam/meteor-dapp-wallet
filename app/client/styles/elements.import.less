@@ -21,6 +21,19 @@ body {
     background-color: @colorDarkBlue;
 }
 
+.dapp-modal-container {
+    background-color: @colorDarkBlue;
+}
+
+.dapp-zebra {
+    color: @colorOrange;
+    background-color: darken(@colorDarkBlue,10%);
+}
+code {
+    
+    background-color: lighten(@colorDarkBlue, 20%);
+}
+
 span.address {
     display: inline;
     position: relative;
@@ -166,6 +179,8 @@ span.address {
     }
     .dapp-progress {
         position: absolute;
+        background-color: @colorDarkBlue;
+        color: @colorDarkBlue;
         left: 0px;
         bottom: 0;
     }
