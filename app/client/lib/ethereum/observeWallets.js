@@ -19,10 +19,19 @@ var random32Bytes = function() {
 addDestiny = function() {
     // If on the mainnet, this will add the Destiny token by default, only once.
     checkForOriginalWallet();
-    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedDestiny){
-        localStorage.setItem('hasAddedDestiny', true);
 
+    //remove old destinyToken
+    if (localStorage.hasAddedDestiny){
         destinyToken = '0x7041462d67ea5c3df16fad5c330388beb2ddfe71';
+        tokenId = Helpers.makeId('token', destinyToken);
+        Tokens.remove(tokenId);
+        localStorage.removeItem('hasAddedDestiny');
+    }
+    //Add new
+    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedNewDestiny){
+        localStorage.setItem('hasAddedNewDestiny', true);
+
+        destinyToken = '0xb872385d1c132410b77058f34a4f2dfe94047d50';
         tokenId = Helpers.makeId('token', destinyToken);
         Tokens.upsert(tokenId, {$set: {
             address: destinyToken,

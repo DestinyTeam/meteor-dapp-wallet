@@ -60,8 +60,8 @@ web3.eth.isSyncing(function(error, syncing) {
 });
 
 
-var connect = function(){
 
+var connect = function(){
     if(web3.isConnected()) {
 
         // only start app operation, when the node is not syncing (or the eth_syncing property doesn't exists)
