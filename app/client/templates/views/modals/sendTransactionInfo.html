@@ -38,6 +38,12 @@
         </small>
     </p>
 
+    {{#if isNotPassSaved}}
+    <p class="tx-info">
+      Password to unlock account
+      <input type="password" name="unlock">
+    </p>
+    {{/if}}
     {{#if data}}
         <hr>
 
