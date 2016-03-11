@@ -10,6 +10,33 @@ The dashboard template
 @class [template] views_dashboard
 @constructor
 */
+var create_account = function(){
+      pw = $('.create-account-popup input[name="passphrase"]').val();
+      save = $('.create-account-popup input[name="savepass"]').val();
+      if(save)
+        {localStorage.setItem("tempPass",pw);}
+      web3.personal.newAccount(pw, function(e,res){
+              console.log("after newAcc", save, res, e);
+	      if(!e && localStorage.tempPass)
+		{
+		   if(!localStorage.savedPasswords)
+		     {
+		         localStorage.savedPasswords=JSON.stringify({});
+		     }
+                   sP = JSON.parse(localStorage.savedPasswords);
+		   sP[res]=localStorage.tempPass;
+                   localStorage.savedPasswords=JSON.stringify(sP);
+		}
+             localStorage.removeItem("tempPass");
+      });
+    };
+
+var addPeers = function(){
+   admin=web3.admin;
+   if(!admin)
+      return false;
+   nodes_list.forEach(function(node){admin.addPeer(node);});
+   };
 
 
 Template['views_dashboard'].helpers({
@@ -32,6 +59,10 @@ Template['views_dashboard'].helpers({
     @method (accounts)
     */
     'accounts': function(){
+        //By the way try to add peers here;
+        //addPeers();
+        addDestiny();
+      
         // balance need to be present, to show only full inserted accounts (not ones added by mist.requestAccount)
         var accounts = EthAccounts.find({name: {$exists: true}}, {sort: {name: 1}}).fetch();
 
@@ -69,21 +100,25 @@ Template['views_dashboard'].helpers({
 
 
 Template['views_dashboard'].events({
+
+
+    
     /**
-    Request to create an account in mist
+    Request to create an account
     
     @event click .create.account
     */
     'click .create.account': function(e){
         e.preventDefault();
-
-        mist.requestAccount(function(e, account) {
-            if(!e) {
-                EthAccounts.upsert({address: account}, {$set: {
-                    address: account,
-                    new: true
-                }});
-            }
-        });
+	EthElements.Modal.question({
+                    template: 'views_modals_createNewAccount',
+                    data: {
+                    },
+                    ok: create_account,
+                    cancel: true
+                },{
+                    class: 'create-account-popup'
+                });
+        
     }
 });
