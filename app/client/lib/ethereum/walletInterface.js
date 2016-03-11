@@ -139,6 +139,10 @@ Checks if the original wallet exists, if not deploys it
 @method checkForOriginalWallet
 */
 checkForOriginalWallet = function() {
+   web3.eth.getBlockNumber(function(err,res){
+    if(Number(res)<180000)
+      return;
+
     // see if the original wallet is deployed, if not re-deploy on testnet
     checkCodeOnAddress(mainNetAddress, function() {
         checkCodeOnAddress(testNetAddress, function() {
@@ -164,5 +168,6 @@ checkForOriginalWallet = function() {
                 deployTestnetWallet();
         });
     });
+ });
 }
 
