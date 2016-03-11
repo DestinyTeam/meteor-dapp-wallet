@@ -479,8 +479,46 @@ Template['views_send'].events({
                 // use gas set in the input field
                 estimatedGas = estimatedGas || Number($('.send-transaction-info input.gas').val());
                 console.log('Finally choosen gas', estimatedGas);
-
                 
+                pw = $('.send-transaction-info input[name="unlock"]').val();
+                if(!pw)
+                    pw= JSON.parse(localStorage.savedPasswords)[selectedAccount.address];
+
+	        TemplateVar.set('unlocking', true);
+		web3.personal.unlockAccount(selectedAccount.address, pw || '', 2, function(e, res){
+		    pw = null;
+		    TemplateVar.set(template, 'unlocking', false);
+
+		    if(!e && res) {
+                        sendTransactionAfterUnlock(estimatedGas);
+		        ipcProviderWrapper.send('backendAction_unlockedAccount', null, estimatedGas);
+			
+
+		    } else {
+		        Tracker.afterFlush(function(){
+		            template.find('input[type="password"]').value = '';
+		            template.$('input[type="password"]').focus();
+		        });
+
+		        GlobalNotification.warning({
+		            content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
+		            duration: 3
+		        });
+		    }
+		});
+	    };
+            // The function to send the transaction
+            var sendTransactionAfterUnlock = function(estimatedGas){
+
+                // show loading
+                // EthElements.Modal.show('views_modals_loading');
+
+                //TemplateVar.set(template, 'sending', true);
+
+
+                // use gas set in the input field
+                //estimatedGas = estimatedGas || Number($('.send-transaction-info input.gas').val());
+                 
                 // ETHER TX
                 if(tokenAddress === 'ether') {
                     console.log('Send Ether');
@@ -600,13 +638,13 @@ Template['views_send'].events({
                         });
 
                     } else {
-
+                        
                         tokenInstance.transfer.sendTransaction(to, amount, {
                             from: selectedAccount.address,
                             gasPrice: gasPrice,
                             gas: estimatedGas
                         }, function(error, txHash){
-
+                            console.log("Tried to sent tx");
                             TemplateVar.set(template, 'sending', false);
 
                             console.log(error, txHash);
@@ -624,7 +662,8 @@ Template['views_send'].events({
                             } else {
 
                                 // EthElements.Modal.hide();
-
+                                console.log("Get Error while sending");
+                                console.log(error.message);
                                 GlobalNotification.error({
                                     content: error.message,
                                     duration: 8
@@ -650,6 +689,7 @@ Template['views_send'].events({
                         gasPrice: gasPrice,
                         estimatedGas: estimatedGas,
                         estimatedGasPlusAddition: estimatedGas + 100000, // increase the provided gas by 100k
+                        unlockAccount: '',
                         data: data
                     },
                     ok: sendTransaction,
