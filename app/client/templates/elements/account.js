@@ -37,7 +37,7 @@ Template['elements_account'].helpers({
     @method (account)
     */
     'account': function(){
-        return EthAccounts.findOne(this.account) || Wallets.findOne(this.account) || CustomContracts.findOne(this.account);
+        return EthAccounts.findOne(this.account) || Wallets.findOne(this.account) || CustomContracts.findOne(this.account) || Applications.findOne(this.account);
     },
     /**
     Get all tokens

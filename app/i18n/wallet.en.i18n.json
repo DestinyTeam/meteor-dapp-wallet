@@ -252,6 +252,7 @@
         },
         "contracts": {
             "contractTitle" : "Contracts",
+            "applicationTitle" : "Applications",
             "deployNewContract": "Deploy new contract",
             "addCustomContract": "Watch contract",
             "customContracts": "Custom contracts",

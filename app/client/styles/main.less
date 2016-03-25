@@ -659,6 +659,7 @@ body {
     input.gas {
         width: 120px;
         font-size: 0.8em;
+        background-color: #173348;
     }
 }
 
@@ -670,6 +671,7 @@ body {
 
     input {
         display: block;
+        background-color: #173348;
     }
 
     label {
@@ -691,6 +693,7 @@ body {
         }
         span {
             color: @colorTextSecondary;
+            background-color: #173348;
         }
         
     }
@@ -700,6 +703,7 @@ body {
 
         .dapp-address-input {
             margin-bottom: @defaultMargin;
+            background-color: #173348;
         }
     }
     p {
@@ -722,6 +726,7 @@ body {
     input[type='checkbox'] {
         float: left; 
         margin-right: @defaultMargin/2;
+        background-color: #173348;
     }
 
     h4, dt {
@@ -743,7 +748,7 @@ body {
     .contract-info {
         
         h3 {
-            color: @colorGrayDark;
+            color: @colorOrange;
             text-transform: lowercase;
             font-weight: 300;
             font-size: 1.2em;
@@ -754,6 +759,8 @@ body {
         input,
         .dapp-address-input {
             width: 100%;
+            max-width: 512px;
+            background-color: #173348;
         }
 
         .output > .dapp-identicon {
@@ -783,20 +790,20 @@ body {
         }
         
         table {
-            max-width: @gridWidth * 16;
             
             tr:nth-child(odd) {
                 border-radius: 4px 4px 0 0;
             }        
 
             tr:nth-child(even) {
-                background-color: #FFF;
-                border-bottom: solid 10px @colorWhite;
+                background-color: lighter(#0b1821, 10%);
+                border-bottom: solid 10px ;
             }
 
             td {
                 border-radius: 2px;
                 vertical-align: top;
+                max-width: 512px;
 
                 h3 {    
                     margin: 0;
@@ -825,6 +832,13 @@ body {
     }
 }
 
+.select-contract-function {
+    background-color: #173348;
+}
+
+.abi-input {
+    background-color: #173348;
+}
 /* #### All small phone screens landscape #### */
 @media screen and (max-width: 576px){
     .dapp-header nav ul li.block-info {

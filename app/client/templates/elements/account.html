@@ -1,6 +1,6 @@
 <template name="elements_account">
     {{#with account}}
-        <a href="{{pathFor route='account' address=address}}" class="wallet-box {{#if creating}}creating{{/if}} {{#if disabled}}disabled{{/if}} {{#if ../wallets}}wallets{{/if}} {{#if new}}new{{/if}}">
+        <a href="{{#unless ../isApp}} {{pathFor route='account' address=address}} {{else}} {{pathFor route='app' address=address}} {{/unless}}" class="wallet-box {{#if creating}}creating{{/if}} {{#if disabled}}disabled{{/if}} {{#if ../wallets}}wallets{{/if}} {{#if new}}new{{/if}}">
             {{#with unConfirmed}}
                 <div class="dapp-progress">
                     <div class="dapp-bar" style="width: {{percent}}%;"></div>
@@ -38,11 +38,15 @@
                 {{#if ../isContract}}
                     <i class="icon-doc"></i>
                 {{else}}
-                    {{walletIcon}}
+                    {{#if ../isApp}}
+                      <i class="icon-rocket"></i>
+                    {{else}}
+                      {{walletIcon}}
+                    {{/if}}
                 {{/if}}
                 {{name}}
             </h3>
-
+          {{#unless ../isApp}}
             {{#unless creating}}
                 {{> elements_balance balance=balance}}
             {{else}}
@@ -52,6 +56,7 @@
                     <span class="account-balance">{{i18n "wallet.accounts.creating"}} <span>...</span></span>
                 {{/if}}
             {{/unless}}
+          {{/unless}}
             <!-- {{#if tokens}}
                 {{#each tokens}} 
                     {{#if formattedCoinBalance}}

@@ -95,6 +95,23 @@ FlowRouter.route('/contracts', {
 
 
 /**
+The Applications route.
+
+@method tokens
+*/
+FlowRouter.route('/applications', {
+    name: 'applications',
+    action: function(params, queryParams) {
+        BlazeLayout.render('layout_main', {
+            header: 'layout_header',
+            main: 'views_applications'
+        });
+    }
+});
+
+
+
+/**
 The send route.
 
 @method send
@@ -187,6 +204,21 @@ FlowRouter.route('/account/:address', {
         BlazeLayout.render('layout_main', {
             header: 'layout_header',
             main: 'views_account'
+        });
+    }
+});
+
+/**
+The account route.
+
+@method send
+*/
+FlowRouter.route('/app/:address', {
+    name: 'app',
+    action: function(params, queryParams) {
+        BlazeLayout.render('layout_main', {
+            header: 'layout_header',
+            main: 'views_given_application'
         });
     }
 });

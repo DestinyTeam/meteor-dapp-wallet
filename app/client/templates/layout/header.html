@@ -47,6 +47,12 @@
                     <span>Contracts</span>
                 </a>
             </li>
+            <li>
+                <a href="{{pathFor route='applications'}}" class="{{isActiveRoute regex='applications'}}">
+                    <i class="icon-rocket"></i>
+                    <span>Applications</span>
+                </a>
+            </li>
             <li class="wallet-balance">
                 <h3>{{i18n 'wallet.app.texts.balance'}}</h3>
                 {{> elements_balance balance=totalBalance changeUnit=true}}

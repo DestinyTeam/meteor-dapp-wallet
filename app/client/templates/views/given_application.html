@@ -1,0 +1,9 @@
+<template name="views_given_application">
+      {{#with application}}
+       <div class="dapp-sticky-bar dapp-container">
+       {{> dapp_identicon identity=address}}
+       <h1><span> {{name}} </span></h1>
+       </div>
+        {{> elements_executeApp address=address jsonInterface=jsonInterface}}
+      {{/with}}
+</template>

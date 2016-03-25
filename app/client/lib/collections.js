@@ -22,3 +22,7 @@ Tokens = new Mongo.Collection('tokens', {connection: null});
 new PersistentMinimongo2(Tokens, 'ethereum_wallet');
 
 
+Applications = new Mongo.Collection('applications', {connection: null});
+new PersistentMinimongo2(Applications, 'ethereum_wallet');
+
+

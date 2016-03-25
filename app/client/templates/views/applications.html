@@ -1,0 +1,10 @@
+<template name="views_applications">
+    <div class="dapp-container">
+
+        <h1>{{{i18n "wallet.contracts.applicationTitle"}}}</h1>
+
+        {{#each applications}}
+            {{> elements_account account=_id isApp=true}}
+        {{/each}}
+    </div>
+</template>
