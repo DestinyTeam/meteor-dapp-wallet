@@ -27,11 +27,26 @@ addDestiny = function() {
         Tokens.remove(tokenId);
         localStorage.removeItem('hasAddedDestiny');
     }
-    //Add new
-    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedNewDestiny){
-        localStorage.setItem('hasAddedNewDestiny', true);
-
+    //remove newer destinyToken
+    if (localStorage.hasAddedNewDestiny){
         destinyToken = '0xb872385d1c132410b77058f34a4f2dfe94047d50';
+        tokenId = Helpers.makeId('token', destinyToken);
+        Tokens.remove(tokenId);
+        localStorage.removeItem('hasAddedNewDestiny');
+    }
+    if (localStorage.hasAddedTDestiny){
+        destinyToken = '0xb5e4ae1ac58caeac1b035dd39f34c72bddd83ced';
+        tokenId = Helpers.makeId('token', destinyToken);
+        Tokens.remove(tokenId);
+        localStorage.removeItem('hasAddedTDestiny');
+    }
+
+    destinyABI=[{"constant":false,"inputs":[{"name":"spender","type":"address"},{"name":"value","representation":"value, satoshi","type":"uint256"}],"name":"approve","description":"Allow spender send funds","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","description":"Shows total number of coins in circulation","outputs":[{"name":"Supply","representation":"value, satoshi","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"value","representation":"value, satoshi","type":"uint256"}],"name":"transferFrom","description":"Send coins from 'from' address if 'from' allowed it","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"_value","representation":"value, satoshi","type":"uint256"}],"name":"burn","description":"irreversibly burn coin","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"totalDeposited","description":"Total number of deposited coins by all owners","outputs":[{"name":"Deposited","representation":"value, satoshi","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"totalBurnt","description":"Shows number of burned coins","outputs":[{"name":"","representation":"value, satoshi","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[],"name":"checkDeposit","description":"shows status of deposit","outputs":[{"name":"success","type":"bool"},{"name":"value","dependsOn":"0","type":"uint256"},{"name":"remainingTime","dependsOn":"0","type":"int256"},{"name":"rate","dependsOn":"0","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","description":"Shows balance of given address","outputs":[{"name":"balance","representation":"value, satoshi","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[],"name":"cashOut","description":"Cash out coins from deposit","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","description":"Shows number of coins which owner allowed spender to spend","outputs":[{"name":"remaining","representation":"value, satoshi","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_value","representation":"value, satoshi","description":"Amount of coins","type":"uint256"},{"name":"_period","description":"Time in seconds","type":"uint256"}],"name":"deposit","description":"Deposit coins to gain profit","outputs":[{"name":"success","type":"bool"}],"type":"function"}];
+    //Add new
+    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedV3Destiny){
+        localStorage.setItem('hasAddedV3Destiny', true);
+
+        destinyToken = '0xc2be9f4c1657c63c856be47f3972ccb0cb0df125';
         tokenId = Helpers.makeId('token', destinyToken);
         Tokens.upsert(tokenId, {$set: {
             address: destinyToken,
@@ -40,11 +55,16 @@ addDestiny = function() {
             balances: {},
             decimals: 8
         }});    
+        Applications.upsert({address: destinyToken}, {
+            address: destinyToken,
+            name: "Destiny",
+            balance: '0',
+            jsonInterface: destinyABI        });
     }
-    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedTDestiny){
-        localStorage.setItem('hasAddedTDestiny', true);
+    if (Session.get('network') == 'mainnet' && !localStorage.hasAddedV3TDestiny){
+        localStorage.setItem('hasAddedV3TDestiny', true);
 
-        tDestinyToken = '0xb5e4ae1ac58caeac1b035dd39f34c72bddd83ced';
+        tDestinyToken = '0x22e6425f4c918ff0b709922a4057bfd0fa111d6e';
         tokenId = Helpers.makeId('token', tDestinyToken);
         Tokens.upsert(tokenId, {$set: {
             address: tDestinyToken,
@@ -52,7 +72,12 @@ addDestiny = function() {
             symbol: 'tD',
             balances: {},
             decimals: 8
-        }});    
+        }});  
+        Applications.upsert({address: tDestinyToken}, {
+            address: tDestinyToken,
+            name: "TestDestiny",
+            balance: '0',
+            jsonInterface: destinyABI        });  
     }
 };
 /**

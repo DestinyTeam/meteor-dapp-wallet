@@ -8,8 +8,6 @@ Template['views_given_application'].helpers({
     @method (jsonInterface)
     */
     'jsonInterface': function() {
-        console.log(this)
-        console.log(this.jsonInterface)
         return this.jsonInterface;
     }
 });

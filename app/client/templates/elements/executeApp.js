@@ -10,6 +10,13 @@ The execute contract template
 @class [template] elements_executeContract
 @constructor
 */
+globalToken={}
+
+var name2name = function(param){
+  if(param.split(" ").length==1)
+    return param;
+  return param.split(" ")[0]+" ";
+ }
 
 Template['elements_executeApp'].onCreated(function(){
     var template = this;
@@ -38,11 +45,9 @@ Template['elements_executeApp'].helpers({
     */
     'reactiveContext': function() {
         var contractInstance = web3.eth.contract(this.jsonInterface).at(this.address);
-
+        globalToken=Tokens.findOne({address: this.address});
         var contractFunctions = [];
         var contractConstants = [];
-        var contractConstantsNoInput = [];
-
         _.each(this.jsonInterface, function(func, i){
 
             // Walk throught the jsonInterface and extract functions and constants
@@ -55,11 +60,7 @@ Template['elements_executeApp'].helpers({
                 if(func.constant){
                     // if it's a constant   
                     func.displayName = func.displayName.replace(/([\_])/g, '<span class="punctuation">$1</span>');
-                    if(func.inputs.length) {
-                      contractConstants.push(func);                    
-                    } else {
-                      contractConstantsNoInput.push(func);
-                    }
+                      contractConstants.push(func); 
                 } else {
                     //if its a variable
                     contractFunctions.push(func);                
@@ -69,7 +70,6 @@ Template['elements_executeApp'].helpers({
         });
 
         TemplateVar.set('contractConstants', contractConstants);
-        TemplateVar.set('contractConstantsNoInput', contractConstantsNoInput);
         TemplateVar.set('contractFunctions', contractFunctions);
     }
 });
@@ -134,6 +134,29 @@ var formatOutput = function(val) {
         return val;
     }
 };
+var formatOutputEnriched = function(output) {
+    val=output.value;
+    if(_.isArray(val))
+        return _.map(val, formatOutput);
+    else {
+
+        // stringify boolean
+        if(_.isBoolean(val))
+            val = val ? 'YES' : 'NO';
+
+        // convert bignumber objects
+       
+        if(output.representation=="value, satoshi"){
+            val= Helpers.formatNumberByDecimals(val, globalToken.decimals) +' '+ globalToken.symbol
+        }
+
+        val = (_.isObject(val) && val.toString)
+            ? val.toString(10)
+            : val;
+
+        return val;
+    }
+};
 
 Template['elements_executeApp_constant'].onCreated(function(){
     var template = this;
@@ -145,6 +168,7 @@ Template['elements_executeApp_constant'].onCreated(function(){
 
         // get args for the constant function
         var args = TemplateVar.get('inputs') || [];
+        for(i=0; i<args.length; i++){ if(args[i]===""){args[i]=0}};
 
         // add callback
         args.push(function(e, r) {
@@ -173,8 +197,12 @@ Template['elements_executeApp_constant'].onCreated(function(){
                 TemplateVar.set(template, 'outputs', outputs);
             } 
         });
-
-        template.data.contractInstance[template.data.name].apply(null, args);
+        //console.log("contractInstance")
+        //console.log(template.data)
+        //console.log(name2name(template.data.name))
+        //console.log(template.data.contractInstance[name2name(template.data.name)])
+        //console.log(args);
+        template.data.contractInstance[name2name(template.data.name)].apply(null, args);
 
     });
 });
@@ -186,7 +214,7 @@ Template['elements_executeApp_constant'].helpers({
     @method (value)
     */
     'value': function() {
-        return _.isArray(this.value) ? formatOutput(this.value) : [formatOutput(this.value)];
+        return _.isArray(this.value) ? formatOutputEnriched(this) : [formatOutputEnriched(this)];
     },
     /**
     Figures out extra data
@@ -225,81 +253,6 @@ Template['elements_executeApp_constant'].events({
 
 
 
-Template['elements_executeApp_constantNoInput'].onCreated(function(){
-    var template = this;
-
-    // call the contract functions when data changes and on new blocks
-    this.autorun(function() {
-        // make reactive to the latest block
-        EthBlocks.latest;
-
-        // get args for the constant function
-        var args = TemplateVar.get('inputs') || [];
-
-        // add callback
-        args.push(function(e, r) {
-            if(!e) {
-                var outputs = [];
-                // single return value
-                if(template.data.outputs.length === 1) {
-                    template.data.outputs[0].value = r;
-                    template.data.outputs[0].displayName = template.data.outputs[0].name.replace(/([A-Z])/g, ' $1');
-
-                    outputs.push(template.data.outputs[0]);
-
-                // multiple return values
-                } else {
-                    outputs = _.map(template.data.outputs, function(output, i) {
-                        output.value = r[i];
-                        output.displayName = output.name
-                        .replace(/([A-Z])/g, ' $1')        
-                        .replace(/([\-\_])/g, '<span class="punctuation">$1</span>');
-;
-
-                        return output;
-                    });
-                }
-
-                TemplateVar.set(template, 'outputs', outputs);
-            } 
-        });
-
-        template.data.contractInstance[template.data.name].apply(null, args);
-
-    });
-});
-
-Template['elements_executeApp_constantNoInput'].helpers({
-    /**
-    Formats the value if its a big number or array
-
-    @method (value)
-    */
-    'value': function() {
-        return _.isArray(this.value) ? formatOutput(this.value) : [formatOutput(this.value)];
-    },
-    /**
-    Figures out extra data
-
-    @method (extra)
-    */
-    'extra': function() {
-        var data = formatOutput(this); // 1000000000
-        // console.log('data', data);
-
-        if (data > 1400000000 && data < 1800000000 && Math.floor(data/1000) != data/1000) {
-            return '(' + moment(data*1000).fromNow() + ')';
-        }
-
-        if (data == 'YES') {
-            return '<span class="icon icon-check"></span>';
-        } else if (data == 'NO') {
-            return '<span class="icon icon-ban"></span>'
-        }
-        return;
-    }
-});
-
 
 
 /**
@@ -323,7 +276,7 @@ Template['elements_executeApp_function'].onCreated(function(){
     });
 });
 
-Template['elements_executeContract_function'].onRendered(function(){
+Template['elements_executeApp_function'].onRendered(function(){
     // Run all inputs through formatter to catch bools
     this.$('.abi-input').trigger('change');
 });
@@ -331,11 +284,11 @@ Template['elements_executeContract_function'].onRendered(function(){
 Template['elements_executeContract_function'].helpers({
     'reactiveDataContext': function(){
         if(this.inputs.length === 0)
-            TemplateVar.set('executeData', this.contractInstance[this.name].getData());
+            TemplateVar.set('executeData', this.contractInstance[name2name(this.name)].getData());
     }
 });
 
-Template['elements_executeContract_function'].events({
+Template['elements_executeApp_function'].events({
     /**
     Set the amount while typing
     
@@ -354,7 +307,7 @@ Template['elements_executeContract_function'].events({
         var inputs = Helpers.addInputValue(template.data.inputs, this, e.currentTarget);
         console.log('inputs: ', inputs)
     
-        TemplateVar.set('executeData', template.data.contractInstance[template.data.name].getData.apply(null, inputs));
+        TemplateVar.set('executeData', template.data.contractInstance[name2name(template.data.name)].getData.apply(null, inputs));
     },
     /**
     Executes a transaction on contract
@@ -372,7 +325,6 @@ Template['elements_executeContract_function'].events({
         var latestTransaction =  Transactions.findOne({}, {sort: {timestamp: -1}});
         if (latestTransaction && latestTransaction.gasPrice)
             gasPrice = latestTransaction.gasPrice; 
-
         if(selectedAccount) {
 
             console.log('Providing gas: ', estimatedGas ,' + 100000');
@@ -384,12 +336,53 @@ Template['elements_executeContract_function'].events({
                 });
 
 
+            var estimateGas = function(){
+                   web3.eth.estimateGas({
+                        from: selectedAccount.address,
+                        to: to,
+                        data: data,
+                        value: amount,
+                        gasPrice: gasPrice,
+                        gas: estimatedGas
+                    }, function(error, GAS){
+                        
+                        estimatedGas=GAS;
+                        modalQuestionSend();
+                    });
+            }
             // The function to send the transaction
             var sendTransaction = function(estimatedGas){
 
                 TemplateVar.set('sending', true);
+                pw = $('.send-transaction-info input[name="unlock"]').val();
+                estimatedGas=$('.send-transaction-info input[name="providedGas"]').val();
+                if(!pw)
+                    pw= JSON.parse(localStorage.savedPasswords)[selectedAccount.address];
 
+	        TemplateVar.set('unlocking', true);
+		web3.personal.unlockAccount(selectedAccount.address, pw || '', 2, function(e, res){
+		    pw = null;
+		    TemplateVar.set(template, 'unlocking', false);
 
+		    if(!e && res) {
+                        sendTransactionAfterUnlock(estimatedGas);
+		        ipcProviderWrapper.send('backendAction_unlockedAccount', null, estimatedGas);
+			
+
+		    } else {
+		        Tracker.afterFlush(function(){
+		            template.find('input[type="password"]').value = '';
+		            template.$('input[type="password"]').focus();
+		        });
+
+		        GlobalNotification.warning({
+		            content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
+		            duration: 3
+		        });
+		    }
+		});
+              }
+              var sendTransactionAfterUnlock = function(estimatedGas){
                 // CONTRACT TX
                 if(contracts['ct_'+ selectedAccount._id]) {
 
@@ -421,7 +414,8 @@ Template['elements_executeContract_function'].events({
                 
                 // SIMPLE TX
                 } else {
-
+                    console.log(to, gasPrice, estimatedGas, amount, selectedAccount, data);
+        
                     web3.eth.sendTransaction({
                         from: selectedAccount.address,
                         to: to,
@@ -456,8 +450,36 @@ Template['elements_executeContract_function'].events({
                     });
                 }   
             };
+            var modalQuestionSend = function(){
+		    if(typeof mist === 'undefined') {
 
-            sendTransaction(estimatedGas);    
+		        console.log('estimatedGas: ' + estimatedGas);
+		        
+		        EthElements.Modal.question({
+		            template: 'views_modals_sendTransactionInfo',
+		            data: {
+		                from: selectedAccount.address,
+		                to: to,
+		                amount: amount,
+		                gasPrice: gasPrice,
+		                estimatedGas: estimatedGas,
+		                estimatedGasPlusAddition: estimatedGas + 100000, // increase the provided gas by 100k
+		                unlockAccount: '',
+		                data: data
+		            },
+		            ok: sendTransaction,
+		            cancel: true
+		        },{
+		            class: 'send-transaction-info'
+		        });
+
+		    // LET MIST HANDLE the CONFIRMATION
+		    } else {
+		        sendTransaction(estimatedGas + 100000);
+		    } 
+              } 
+             
+            estimateGas();
         }
     }
 });

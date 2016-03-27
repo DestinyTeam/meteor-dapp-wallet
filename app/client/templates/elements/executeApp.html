@@ -26,9 +26,6 @@
             
                         <table class="dapp-zebra">
                             <tbody>
-                            {{#each (TemplateVar.get "contractConstantsNoInput")}}
-                                {{> elements_executeApp_constantNoInput}}
-                            {{/each}}
                             {{#each (TemplateVar.get "contractConstants")}}
                                 {{> elements_executeApp_constant}}
                             {{/each}}
@@ -67,6 +64,9 @@
     <tr>
         <td>
             <h3>{{{displayName}}}</h3>
+            {{#if description}}
+              <span class="icon icon-question" title="{{description}}"></span>
+            {{/if}}
             {{#each inputs}}
                 {{> Template.dynamic template=template}}
             {{/each}}
@@ -83,10 +83,11 @@
                         {{#if $eq ../type "address"}}
                             {{> elements_account_link address=this}}
                         {{else}}
-                        {{this}}
-                        <em> {{{extra}}} </em>
+                          
+                          {{this}}
+                          <em> {{{extra}}} </em>
+                          <br>
                         {{/if}}
-                        <br>
                     {{/each}}
                 </dd> 
             {{/each}}
@@ -95,40 +96,17 @@
     </tr>
 </template>
 
-<template name="elements_executeApp_constantNoInput">
-    <tr>
-        <td>
-            <h3>{{{displayName}}}</h3>
-        </td>
-
-        <td>
-            <dl class="constant-{{name}} dapp-zebra">
-            {{#each (TemplateVar.get "outputs")}}
-                {{#if name}}
-                    <dt>{{{displayName}}}</dt>
-                {{/if}}
-                <dd class="output">
-                    {{#each value}}
-                        {{#if $eq ../type "address"}}
-                            {{> elements_account_link address=this}}
-                        {{else}}
-                        {{this}}
-                        <em> {{{extra}}} </em>
-                        {{/if}}
-                        <br>
-                    {{/each}}
-                </dd> 
-            {{/each}}
-            </dl>
-        </td>
-    </tr>
-</template>
 
 
 <template name="elements_executeApp_function">
     {{reactiveDataContext}}
-
+    {{#if description}}
+              <h4>{{description}}</h4>
+    {{/if}}
     {{#each inputs}}
+            {{#if description}}
+              <p>{{description}}</p>
+            {{/if}}
         {{> Template.dynamic template=template}}
     {{/each}}
 
