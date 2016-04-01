@@ -281,7 +281,7 @@ Template['elements_executeApp_function'].onRendered(function(){
     this.$('.abi-input').trigger('change');
 });
 
-Template['elements_executeContract_function'].helpers({
+Template['elements_executeApp_function'].helpers({
     'reactiveDataContext': function(){
         if(this.inputs.length === 0)
             TemplateVar.set('executeData', this.contractInstance[name2name(this.name)].getData());
