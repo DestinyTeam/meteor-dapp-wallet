@@ -195,7 +195,13 @@ var updateTransaction = function(newDocument, transaction, receipt){
 
         newDocument.contractAddress = receipt.contractAddress;
         newDocument.gasUsed = receipt.gasUsed;
-        newDocument.outOfGas = receipt.gasUsed === transaction.gas;
+        isContract = (transaction.input!="0x");
+        if(isContract){
+           newDocument.outOfGas = (receipt.gasUsed === transaction.gas) &&
+                                  !(receipt.logs && receipt.logs.length);
+        } else {
+           newDocument.outOfGas = (receipt.gasUsed === transaction.gas);
+        }
         newDocument.fee = transaction.gasPrice.times(new BigNumber(receipt.gasUsed)).toString(10);
 
         if (newDocument.outOfGas){
